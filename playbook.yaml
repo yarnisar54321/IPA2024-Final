@@ -1,0 +1,16 @@
+---
+- name: Get show running-config
+  hosts: routers
+  gather_facts: no
+  tasks:
+    - name: Run show running-config
+      cisco.ios.ios_command:
+        commands:
+          - show running-config
+      register: runout
+
+    - name: Save to local file
+      delegate_to: localhost
+      copy:
+        content: "{{ runout.stdout[0] }}"
+        dest: "show_run_{{ lookup('env','STUDENT_ID') | default('66070052') }}_CSR1KV-PodX-Y.txt"
